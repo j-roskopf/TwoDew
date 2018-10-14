@@ -1,4 +1,4 @@
-package com.example.z003b2z.twodew.adapter
+package com.example.z003b2z.twodew.main.adapter
 
 import android.content.Context
 import android.graphics.Color
@@ -9,20 +9,16 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z003b2z.twodew.R
-import com.example.z003b2z.twodew.model.GenericItem
-import com.example.z003b2z.twodew.model.ScreenState
+import com.example.z003b2z.twodew.main.MainAction
+import com.example.z003b2z.twodew.main.MainActionHandler
+import com.example.z003b2z.twodew.main.MainScreenState
+import com.example.z003b2z.twodew.main.model.GenericItem
 import kotlinx.android.synthetic.main.task_item.view.*
 
 
-class MainAdapter(private val items: ArrayList<GenericItem>, private val clickListener: OnItemClickListener, screenState: ScreenState): RecyclerView.Adapter<MainAdapterViewHolder>() {
+class MainAdapter(private val items: ArrayList<GenericItem>, private val actionHandler: MainActionHandler, screenState: MainScreenState): RecyclerView.Adapter<MainAdapterViewHolder>() {
 
-    interface OnItemClickListener {
-        fun whoItemClicked(text: String)
-        fun whatItemClicked(text: String)
-        fun whenItemClicked(text: String)
-    }
-
-    private var screenState: ScreenState
+    private var screenState: MainScreenState
 
     init {
         this.screenState = screenState
@@ -36,14 +32,14 @@ class MainAdapter(private val items: ArrayList<GenericItem>, private val clickLi
         holder.bind(items[position])
         holder.itemView.setOnClickListener {
             when(screenState) {
-                ScreenState.WHO -> clickListener.whoItemClicked(items[position].text)
-                ScreenState.WHAT -> clickListener.whatItemClicked(items[position].text)
-                ScreenState.WHEN -> clickListener.whenItemClicked(items[position].text)
+                is MainScreenState.Who -> actionHandler(MainAction.WhoClicked(items[position].text))
+                is MainScreenState.What -> actionHandler(MainAction.WhatClicked(items[position].text))
+                is MainScreenState.When -> actionHandler(MainAction.WhenClicked(items[position].text))
             }
         }
     }
 
-    fun updateData(newData: ArrayList<GenericItem>, state: ScreenState) {
+    fun updateData(newData: ArrayList<GenericItem>, state: MainScreenState) {
         this.screenState = state
         val result = DiffUtil.calculateDiff(ItemDiffUtil(items, newData), false)
         this.items.clear()

@@ -38,5 +38,7 @@ dependencies {
     implementation 'org.koin:koin-android:1.0.1'
     implementation 'org.koin:koin-android-scope:1.0.1'
     implementation 'org.koin:koin-android-viewmodel:1.0.1'
+
+    implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
 }
 apply plugin: 'com.google.gms.google-services'

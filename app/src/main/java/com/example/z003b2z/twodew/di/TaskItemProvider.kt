@@ -1,7 +1,6 @@
 package com.example.z003b2z.twodew.di
 
-import com.example.z003b2z.twodew.model.GenericItem
-import com.example.z003b2z.twodew.model.TaskItem
+import com.example.z003b2z.twodew.main.model.GenericItem
 
 class TaskItemProvider {
     fun provideListOfTaskItems() = arrayListOf(
