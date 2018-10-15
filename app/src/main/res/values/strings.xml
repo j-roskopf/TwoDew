@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TwoDew</string>
+    <string name="ok">Okay</string>
+    <string name="cancel">Cancel</string>
 </resources>

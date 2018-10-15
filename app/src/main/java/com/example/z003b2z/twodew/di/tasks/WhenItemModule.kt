@@ -1,4 +1,4 @@
-package com.example.z003b2z.twodew.di
+package com.example.z003b2z.twodew.di.tasks
 
 import org.koin.dsl.module.module
 

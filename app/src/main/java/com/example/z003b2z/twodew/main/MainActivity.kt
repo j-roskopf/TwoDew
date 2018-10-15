@@ -6,21 +6,24 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z003b2z.twodew.R
 import com.example.z003b2z.twodew.animation.Reveal
-import com.example.z003b2z.twodew.di.TaskItemProvider
-import com.example.z003b2z.twodew.di.WhenItemProvider
-import com.example.z003b2z.twodew.di.WhoItemProvider
+import com.example.z003b2z.twodew.di.tasks.TaskItemProvider
+import com.example.z003b2z.twodew.di.tasks.WhenItemProvider
+import com.example.z003b2z.twodew.di.tasks.WhoItemProvider
 import com.example.z003b2z.twodew.main.adapter.MainAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import android.view.animation.OvershootInterpolator
-import com.example.z003b2z.twodew.main.model.GenericItem
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.main_confirmation.*
+import android.view.animation.AnimationUtils
+import com.example.z003b2z.twodew.android.ClickListener
+import com.example.z003b2z.twodew.android.PromptDialog
+import com.example.z003b2z.twodew.db.TaskDatabase
+
 
 //koin
 //new material design
@@ -42,6 +45,8 @@ class MainActivity : AppCompatActivity() {
 
     private val revealAnimation: Reveal by inject()
 
+    private val db: TaskDatabase by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -59,6 +64,28 @@ class MainActivity : AppCompatActivity() {
 
         val animator = LandingAnimator(OvershootInterpolator(1f))
         mainRecyclerView.itemAnimator = animator
+
+        val `in` = AnimationUtils.loadAnimation(this,
+                android.R.anim.slide_in_left)
+        val out = AnimationUtils.loadAnimation(this,
+                android.R.anim.slide_out_right)
+
+        mainWhoTextSwitcher.inAnimation = `in`
+        mainWhoTextSwitcher.outAnimation = out
+
+        mainWhenTextSwitcher.inAnimation = `in`
+        mainWhenTextSwitcher.outAnimation = out
+
+        mainWhatTextSwitcher.inAnimation = `in`
+        mainWhatTextSwitcher.outAnimation = out
+
+        mainWriteFab.setOnClickListener {
+            PromptDialog(this, android.R.string.paste, android.R.string.httpErrorUnsupportedScheme, object: ClickListener {
+                override fun clicked(text: String) {
+
+                }
+            }).show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -103,7 +130,6 @@ class MainActivity : AppCompatActivity() {
             is MainScreenState.What -> renderWhatState()
             is MainScreenState.When -> renderWhenState()
             is MainScreenState.Confirmation -> renderConfirmationState()
-            else -> throw IllegalArgumentException("What state are you?")
         }
     }
 
@@ -160,6 +186,5 @@ class MainActivity : AppCompatActivity() {
         t.textSize = 22f
         return t
     }
-
 }
 
