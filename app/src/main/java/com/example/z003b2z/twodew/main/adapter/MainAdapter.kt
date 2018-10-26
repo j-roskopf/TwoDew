@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z003b2z.twodew.R
+import com.example.z003b2z.twodew.android.extensions.inflate
 import com.example.z003b2z.twodew.main.MainAction
 import com.example.z003b2z.twodew.main.MainActionHandler
 import com.example.z003b2z.twodew.main.MainScreenState
@@ -69,6 +70,3 @@ class MainAdapterViewHolder(private val view: View): RecyclerView.ViewHolder(vie
 
 }
 
-fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
-    return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
-}

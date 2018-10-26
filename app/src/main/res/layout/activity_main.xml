@@ -13,10 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
-        app:backgroundTint="@color/colorAccent" />
+        app:backgroundTint="@color/colorAccent">
+
+        <ImageButton
+            android:id="@+id/mainMenuIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_menu_white_24dp"
+            tools:ignore="ContentDescription" />
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/mainWriteFab"
+        android:id="@+id/mainFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_edit_white_24dp"
@@ -41,7 +51,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextSwitcher
+            <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
                 android:id="@+id/mainWhoTextSwitcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,7 +64,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextSwitcher
+            <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
                 android:id="@+id/mainWhatTextSwitcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +75,7 @@
                 app:layout_constraintStart_toEndOf="@+id/mainWhoTextSwitcher"
                 app:layout_constraintTop_toTopOf="@+id/mainWhoTextSwitcher" />
 
-            <TextSwitcher
+            <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
                 android:id="@+id/mainWhenTextSwitcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,6 +106,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+    <!-- Adding bottom sheet after main content -->
+    <include layout="@layout/main_bottom_sheet" />
     ​
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

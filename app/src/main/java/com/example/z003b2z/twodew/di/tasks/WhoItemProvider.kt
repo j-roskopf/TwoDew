@@ -6,7 +6,7 @@ class WhoItemProvider {
     fun provideListOfWhoItems() = arrayListOf(
             GenericItem("me"),
             GenericItem("friend"),
-            GenericItem("S/O"),
+            GenericItem("partner"),
             GenericItem("house"),
             GenericItem("work"),
             GenericItem("doctor")

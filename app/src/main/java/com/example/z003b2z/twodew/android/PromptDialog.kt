@@ -42,7 +42,6 @@ class PromptDialog(context: Context, title: Int, message: Int, private val click
         }
     }
 
-
     fun onClick(dialog: DialogInterface, which: Int) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             clickListener.clicked(input.text.toString())
