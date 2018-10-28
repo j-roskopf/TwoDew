@@ -1,3 +1,3 @@
 package com.example.z003b2z.twodew.main.model
 
-class TaskItem(text: String): GenericItem(text)
+class TaskItem(var who: String, var what: String, var `when`: String): GenericItem(who + what + `when`)

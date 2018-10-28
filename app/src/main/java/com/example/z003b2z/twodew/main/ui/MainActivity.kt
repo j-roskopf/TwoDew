@@ -1,7 +1,5 @@
 package com.example.z003b2z.twodew.main.ui
 
-import android.R.attr.bottom
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -30,7 +28,8 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import android.app.NotificationManager
 import android.content.Context
-import androidx.annotation.NonNull
+import android.graphics.Color
+import android.os.Build
 import com.example.z003b2z.twodew.db.entity.Task
 import com.example.z003b2z.twodew.main.MainAction
 import com.example.z003b2z.twodew.main.MainScreenState
@@ -39,11 +38,10 @@ import com.example.z003b2z.twodew.notification.NotificationBuilder
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.main_bottom_sheet.*
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.GravityCompat
-import android.view.Gravity
-import android.R.attr.gravity
-import androidx.transition.TransitionManager
+import android.view.WindowManager
+import android.app.Activity
+import androidx.annotation.ColorInt
+import com.example.z003b2z.twodew.android.extensions.changeStatusBarColor
 
 
 //koin
@@ -53,7 +51,7 @@ import androidx.transition.TransitionManager
 //make sure to handle app restart for notifications
 //allow user defined action words / time units
 //who -> what -> when
-//figure out why circular animation doesn't work first time
+//firebase
 
 //todo yet
 //settings page - pref for closing , custom tiles
@@ -71,9 +69,6 @@ class MainActivity : AppCompatActivity() {
     private val revealAnimation: Reveal by inject()
 
     private val compositeDisposable = CompositeDisposable()
-
-    private var animateOpen = false
-    private var animateClose = false
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -116,6 +111,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
+
     private fun setupBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(mainBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -124,9 +124,11 @@ class MainActivity : AppCompatActivity() {
     private fun buildNotification(id: Long) {
         val builder = notificationBuilder.build(this,
                 id.toInt(),
-                mainViewModel.currentTask.text
+                mainViewModel.buildNotificationText()
         )
         val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        mainViewModel.scheduleJob(id)
 
         mNotificationManager.notify(id.toInt(), builder.build())
     }
@@ -245,45 +247,19 @@ class MainActivity : AppCompatActivity() {
             confirmation: Int = View.GONE,
             base: Int = View.GONE
     ) {
-        setFabState()
+        mainViewModel.updateCurrentTask(confirmationWhoText.text, confirmationWhatText.text, confirmationWhenText.text)
+
+        mainFab.setFabState(mainViewModel)
 
         baseRevealConfirmationLayout.visibility = confirmation
         mainMenuIcon.visibility = base
         mainBaseContent.visibility = base
-    }
 
-    private fun setFabState() {
-        if (mainViewModel.currentState == MainScreenState.Confirmation) {
-            mainFab.post {
-                mainFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_check_white_24dp))
-                mainFab.setOnClickListener {
-                    mainViewModel.currentTask = Task(mainViewModel.buildNotificationText(confirmationWhoText, confirmationWhatText, confirmationWhenText))
-                    mainViewModel.insertTask(
-                            mainViewModel.currentTask.text
-                    )
-                }
-            }
+        if(confirmation == View.GONE) {
+            changeStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark), true)
         } else {
-            mainFab.post {
-                mainFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_edit_white_24dp))
-                mainFab.setOnClickListener {
-                    PromptDialog(this, android.R.string.paste, android.R.string.httpErrorUnsupportedScheme, object : ClickListener {
-                        override fun clicked(text: String) = if(!text.isBlank()) {
-                            mainViewModel.currentTask = Task(text)
-                            mainViewModel.insertTask(mainViewModel.currentTask.text)
-                        } else {
-                            Snackbar.make(mainFab, "Please enter some text", Snackbar.LENGTH_SHORT).show()
-                        }
-                    }).show()
-                }
-            }
-        }
-
-        if(mainViewModel.currentState != MainScreenState.DrawerOpen) {
-            //apply fix when found
-            mainFab.refreshDrawableState()
+            changeStatusBarColor(ContextCompat.getColor(this, R.color.confirmation), false)
         }
     }
 
 }
-

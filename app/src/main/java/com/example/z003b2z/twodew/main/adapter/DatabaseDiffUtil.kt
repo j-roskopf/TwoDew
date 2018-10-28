@@ -14,7 +14,8 @@ class DatabaseDiffUtil(private val old: List<Task>, private val new: List<Task>)
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition].text == new[newItemPosition].text
+        return old[oldItemPosition].id == new[newItemPosition].id
+
     }
 
 }

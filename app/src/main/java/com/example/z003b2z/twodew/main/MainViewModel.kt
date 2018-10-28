@@ -1,14 +1,17 @@
 package com.example.z003b2z.twodew.main
 
-import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import com.example.z003b2z.twodew.db.TaskDatabase
 import com.example.z003b2z.twodew.db.entity.Task
+import com.example.z003b2z.twodew.job.TaskReminderJob
 import com.example.z003b2z.twodew.redux.Action
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
+import com.evernote.android.job.util.support.PersistableBundleCompat
+import com.example.z003b2z.twodew.main.model.GenericItem
+import com.example.z003b2z.twodew.main.model.TaskItem
+
 
 class MainViewModel(val db: TaskDatabase) : ViewModel() {
 
@@ -20,7 +23,7 @@ class MainViewModel(val db: TaskDatabase) : ViewModel() {
 
     var previousState = currentState
 
-    var currentTask = Task("")
+    var currentTask = TaskItem("","","")
 
     val databaseSubject: BehaviorSubject<Long> = BehaviorSubject.create()
     val bottomSheetDatabaseBehaviorSubject: BehaviorSubject<List<Task>> = BehaviorSubject.create()
@@ -55,31 +58,54 @@ class MainViewModel(val db: TaskDatabase) : ViewModel() {
         return currentState
     }
 
-    fun buildNotificationText(vararg textViews: TextView): String {
-        var toReturn = ""
-        for (textView in textViews) {
-            toReturn += textView.text.toString() + " "
-        }
-        return toReturn
+    fun buildNotificationText(): String {
+        return currentTask.who + " " + currentTask.what + " " + currentTask.`when`
     }
 
-    fun insertTask(text: String) {
+    fun buildTask(): Task {
+        return Task(
+                who = currentTask.who,
+                what = currentTask.what,
+                `when` = currentTask.`when`
+        )
+    }
+
+    fun insertTask(who: String, what: String, `when`: String) {
         GlobalScope.launch {
-            val taskResult = db.dao().insertTask(Task(text))
+            val taskResult = db.dao().insertTask(Task(who, what, `when`))
             databaseSubject.onNext(taskResult)
         }
     }
 
     fun fetchTasks(databaseBehaviorSubject: BehaviorSubject<List<Task>>) {
         GlobalScope.launch {
-            delay(1000)
             val taskResult = db.dao().selectAll()
             databaseBehaviorSubject.onNext(taskResult)
         }
     }
 
+    fun scheduleJob(id: Long) {
+        val extras = PersistableBundleCompat()
+        extras.putLong(JOB_PARAM_ID, id)
+        extras.putString(JOB_PARAM_WHO, currentTask.who)
+        extras.putString(JOB_PARAM_WHAT, currentTask.what)
+        extras.putString(JOB_PARAM_WHEN, currentTask.`when`)
+        TaskReminderJob.scheduleJob()
+    }
+
+    fun updateCurrentTask(who: CharSequence, what: CharSequence, `when`: CharSequence) {
+        currentTask.who = who.toString()
+        currentTask.what = what.toString()
+        currentTask.`when` = `when`.toString()
+    }
+
     companion object {
         const val INTENT_TEXT = "text"
         const val INTENT_ID = "id"
+
+        const val JOB_PARAM_WHO = "who"
+        const val JOB_PARAM_WHAT = "what"
+        const val JOB_PARAM_WHEN = "when"
+        const val JOB_PARAM_ID = "id"
     }
 }
