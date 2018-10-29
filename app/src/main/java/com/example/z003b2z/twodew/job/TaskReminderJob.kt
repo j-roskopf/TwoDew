@@ -2,15 +2,19 @@ package com.example.z003b2z.twodew.job
 
 import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
 import androidx.annotation.NonNull
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobRequest
+import com.evernote.android.job.util.support.PersistableBundleCompat
+import com.example.z003b2z.twodew.db.TaskDatabase
+import com.example.z003b2z.twodew.db.entity.JobEntity
+import com.example.z003b2z.twodew.main.MainViewModel.Companion.JOB_PARAM_WHAT
+import com.example.z003b2z.twodew.main.MainViewModel.Companion.JOB_PARAM_WHO
 import com.example.z003b2z.twodew.notification.NotificationBuilder
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
-import timber.log.Timber
 
 
 class TaskReminderJob : Job(), KoinComponent {
@@ -20,10 +24,10 @@ class TaskReminderJob : Job(), KoinComponent {
     @NonNull
     override fun onRunJob(params: Params): Result {
         val id = ((Math.random() * 100) + 100).toInt()
-        // run your job here
+
         val builder = notificationBuilder.build(context,
-                ((Math.random() * 100) + 100).toInt(),
-                "reminding you about your notification"
+                -1,
+                "reminding ${params.extras[JOB_PARAM_WHO]} about ${params.extras[JOB_PARAM_WHAT]}"
         )
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -36,11 +40,16 @@ class TaskReminderJob : Job(), KoinComponent {
 
         val TAG = "task_reminder"
 
-        fun scheduleJob() {
-            JobRequest.Builder(TAG)
-                    .setExact(5000L)
+        fun scheduleJob(extras: PersistableBundleCompat, durationFromWhen: Long, database: TaskDatabase, taskId: Long) {
+            val id = JobRequest.Builder(TAG)
+                    .setExact(durationFromWhen)
+                    .setExtras(extras)
                     .build()
                     .schedule()
+
+            GlobalScope.launch {
+                database.jobDao().insertJob(JobEntity(id, taskId.toInt()))
+            }
         }
     }
 }

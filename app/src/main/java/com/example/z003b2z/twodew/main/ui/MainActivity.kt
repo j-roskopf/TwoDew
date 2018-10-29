@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         compositeDisposable += mainViewModel.bottomSheetDatabaseBehaviorSubject.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    mainViewModel.currentState = mainViewModel.previousState
                     mainBottomSheet.updateData(ArrayList(it))
                     render(mainViewModel.reduce(MainAction.DrawerOpened))
                 }, {

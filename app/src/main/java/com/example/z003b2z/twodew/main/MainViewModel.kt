@@ -9,8 +9,8 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import com.evernote.android.job.util.support.PersistableBundleCompat
-import com.example.z003b2z.twodew.main.model.GenericItem
 import com.example.z003b2z.twodew.main.model.TaskItem
+import com.example.z003b2z.twodew.time.PeriodParser
 
 
 class MainViewModel(val db: TaskDatabase) : ViewModel() {
@@ -72,14 +72,14 @@ class MainViewModel(val db: TaskDatabase) : ViewModel() {
 
     fun insertTask(who: String, what: String, `when`: String) {
         GlobalScope.launch {
-            val taskResult = db.dao().insertTask(Task(who, what, `when`))
+            val taskResult = db.taskDao().insertTask(Task(who, what, `when`))
             databaseSubject.onNext(taskResult)
         }
     }
 
     fun fetchTasks(databaseBehaviorSubject: BehaviorSubject<List<Task>>) {
         GlobalScope.launch {
-            val taskResult = db.dao().selectAll()
+            val taskResult = db.taskDao().selectAll()
             databaseBehaviorSubject.onNext(taskResult)
         }
     }
@@ -90,7 +90,7 @@ class MainViewModel(val db: TaskDatabase) : ViewModel() {
         extras.putString(JOB_PARAM_WHO, currentTask.who)
         extras.putString(JOB_PARAM_WHAT, currentTask.what)
         extras.putString(JOB_PARAM_WHEN, currentTask.`when`)
-        TaskReminderJob.scheduleJob()
+        TaskReminderJob.scheduleJob(extras, PeriodParser.getDurationFromWhem(currentTask.`when`), db, id)
     }
 
     fun updateCurrentTask(who: CharSequence, what: CharSequence, `when`: CharSequence) {

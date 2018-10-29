@@ -37,7 +37,7 @@ class BottomSheetAdapter(val items: ArrayList<Task>) : RecyclerView.Adapter<Bott
 }
 
 class BottomSheetAdapterViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-    var dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss")
+    private var dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss")
 
     @SuppressLint("SetTextI18n")
     fun bind(genericItem: Task) {
@@ -50,13 +50,6 @@ class BottomSheetAdapterViewHolder(private val view: View) : RecyclerView.ViewHo
     }
 
     private fun getDuration(`when`: String, timestamp: Long): LocalDateTime {
-        val formatter = PeriodFormatterBuilder()
-                .appendDays().appendSuffix(PeriodParser.DAY_SUFFIX)
-                .appendHours().appendSuffix(PeriodParser.HOUR_SUFFIX)
-                .appendMinutes().appendSuffix(PeriodParser.MINUTE_SUFFIX)
-                .toFormatter()
-        val period = formatter.parsePeriod(`when`.replace(" ",""))
-        return LocalDateTime(timestamp + period.toStandardDuration().millis)
+        return PeriodParser.getDateFromWhem(`when`, timestamp)
     }
-
 }

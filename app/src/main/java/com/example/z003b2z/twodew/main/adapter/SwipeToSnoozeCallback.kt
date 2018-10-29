@@ -16,7 +16,7 @@ abstract class SwipeToSnoozeCallback(context: Context) : ItemTouchHelper.SimpleC
     private val intrinsicWidth = snoozeIconDrawable?.intrinsicWidth ?: 0
     private val intrinsicHeight = snoozeIconDrawable?.intrinsicHeight ?: 0
     private val background = ColorDrawable()
-    private val backgroundColor = Color.parseColor("#ffeb3b")
+    private val backgroundColor = Color.parseColor("#FFC107")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
 
@@ -49,7 +49,7 @@ abstract class SwipeToSnoozeCallback(context: Context) : ItemTouchHelper.SimpleC
         val deleteIconLeft = itemView.left + deleteIconMargin
         val deleteIconRight = itemView.left + deleteIconMargin + intrinsicWidth
         val deleteIconBottom = deleteIconTop + intrinsicHeight
-        
+
         // Draw the delete icon
         snoozeIconDrawable?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
         snoozeIconDrawable?.draw(c)

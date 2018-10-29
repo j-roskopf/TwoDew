@@ -12,7 +12,7 @@ import org.koin.dsl.module.module
 val AppModule = module {
     single { Room.databaseBuilder(androidApplication(), TaskDatabase::class.java, "task-db").fallbackToDestructiveMigration().build() }
 
-    single { get<TaskDatabase>().dao() }
+    single { get<TaskDatabase>().taskDao() }
 
     single { NotificationBuilder() }
 

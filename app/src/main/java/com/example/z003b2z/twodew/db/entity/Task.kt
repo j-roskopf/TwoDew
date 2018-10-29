@@ -9,4 +9,4 @@ data class Task(@ColumnInfo(name="who") var who: String,
                 @ColumnInfo(name="what") var what: String,
                 @ColumnInfo(name="when") var `when`: String,
                 @ColumnInfo(name="time") var timestamp: Long = System.currentTimeMillis(),
-                        @ColumnInfo(name="id") @PrimaryKey(autoGenerate = true) var id: Long = 0)
+                @ColumnInfo(name="id") @PrimaryKey(autoGenerate = true) var id: Long = 0)

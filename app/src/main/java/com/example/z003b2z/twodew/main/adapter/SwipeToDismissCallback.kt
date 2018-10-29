@@ -11,11 +11,11 @@ import com.example.z003b2z.twodew.R
 
 abstract class SwipeToDismissCallback(context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
-    private val deleteIcon = ContextCompat.getDrawable(context, R.drawable.ic_delete_white_24dp)
+    private val deleteIcon = ContextCompat.getDrawable(context, R.drawable.ic_check_white_24dp)
     private val intrinsicWidth = deleteIcon?.intrinsicWidth ?: 0
     private val intrinsicHeight = deleteIcon?.intrinsicHeight ?: 0
     private val background = ColorDrawable()
-    private val backgroundColor = Color.parseColor("#f44336")
+    private val backgroundColor = Color.parseColor("#1976D2")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
 

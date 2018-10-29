@@ -6,6 +6,7 @@ import com.example.z003b2z.twodew.time.PeriodParser
 class WhenItemProvider {
     fun provideListOfWhenItems() = arrayListOf(
             GenericItem("Never"),
+            GenericItem("10 ".plus(PeriodParser.SECOND_SUFFIX)),
             GenericItem("5 ".plus(PeriodParser.MINUTE_SUFFIX)),
             GenericItem("15 ".plus(PeriodParser.MINUTE_SUFFIX)),
             GenericItem("30 ".plus(PeriodParser.MINUTE_SUFFIX)),

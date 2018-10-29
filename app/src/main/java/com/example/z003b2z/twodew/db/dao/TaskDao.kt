@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 @Dao
 interface TaskDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTask(task: Task): Long
 
     @Update
