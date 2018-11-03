@@ -107,7 +107,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Adding bottom sheet after main content -->
-    <include layout="@layout/main_bottom_sheet" />
-    ​
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

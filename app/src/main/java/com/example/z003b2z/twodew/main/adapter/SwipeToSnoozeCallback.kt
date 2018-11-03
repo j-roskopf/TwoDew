@@ -16,7 +16,7 @@ abstract class SwipeToSnoozeCallback(context: Context) : ItemTouchHelper.SimpleC
     private val intrinsicWidth = snoozeIconDrawable?.intrinsicWidth ?: 0
     private val intrinsicHeight = snoozeIconDrawable?.intrinsicHeight ?: 0
     private val background = ColorDrawable()
-    private val backgroundColor = Color.parseColor("#FFC107")
+    private val backgroundColor = Color.parseColor("#EBCB8B")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
 

@@ -19,6 +19,6 @@ interface TaskDao {
     @Query("DELETE FROM tasks WHERE id = :id")
     fun deleteById(id: Int): Int
 
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM tasks ORDER BY time DESC")
     fun selectAll(): List<Task>
 }

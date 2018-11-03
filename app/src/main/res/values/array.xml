@@ -154,13 +154,10 @@
         <item name="cyan_700" type="color">#0097a7</item>
         <item name="teal_700" type="color">#00796b</item>
         <item name="green_700" type="color">#0a7e07</item>
-        <item name="light_green_700" type="color">#689f38</item>
         <item name="lime_700" type="color">#afb42b</item>
         <item name="yellow_700" type="color">#fbc02d</item>
         <item name="orange_700" type="color">#f57c00</item>
         <item name="deep_orange_700" type="color">#e64a19</item>
-        <item name="brown_700" type="color">#5d4037</item>
-        <item name="grey_700" type="color">#616161</item>
         <item name="blue_grey_700" type="color">#455a64</item>
     </array>
     <array name="mdcolor_800">
@@ -275,5 +272,22 @@
         <item name="grey_1000b" type="color">#000000</item>
         <item name="grey_1000w" type="color">#ffffff</item>
     </array>
+
+    <array name="nord">
+        <item name="nord_0" type="color">#2E3440</item>
+        <item name="nord_1" type="color">#3B4252</item>
+        <item name="nord_2" type="color">#434C5E</item>
+        <item name="nord_3" type="color">#4C566A</item>
+        <item name="nord_4" type="color">#8FBCBB</item>
+        <item name="nord_5" type="color">#88C0D0</item>
+        <item name="nord_6" type="color">#88C0D0</item>
+        <item name="nord_7" type="color">#5E81AC</item>
+        <item name="nord_8" type="color">#BF616A</item>
+        <item name="nord_9" type="color">#D08770</item>
+        <item name="nord_10" type="color">#EBCB8B</item>
+        <item name="nord_11" type="color">#A3BE8C</item>
+        <item name="nord_12" type="color">#B48EAD</item>
+    </array>
+
 
 </resources>

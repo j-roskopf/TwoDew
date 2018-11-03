@@ -3,10 +3,15 @@ package com.example.z003b2z.twodew.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import androidx.room.Entity
+import com.example.z003b2z.twodew.main.model.TaskItem
 
 @Entity(tableName = "tasks")
 data class Task(@ColumnInfo(name="who") var who: String,
                 @ColumnInfo(name="what") var what: String,
                 @ColumnInfo(name="when") var `when`: String,
                 @ColumnInfo(name="time") var timestamp: Long = System.currentTimeMillis(),
-                @ColumnInfo(name="id") @PrimaryKey(autoGenerate = true) var id: Long = 0)
+                @ColumnInfo(name="id") @PrimaryKey(autoGenerate = true) var id: Long = 0) {
+
+
+    fun toTaskItem() = TaskItem(who, what, `when`)
+}

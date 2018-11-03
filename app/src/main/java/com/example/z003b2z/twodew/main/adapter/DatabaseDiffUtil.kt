@@ -2,9 +2,9 @@ package com.example.z003b2z.twodew.main.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.z003b2z.twodew.db.entity.Task
-import com.example.z003b2z.twodew.main.model.GenericItem
+import com.example.z003b2z.twodew.main.model.GenericReminderItem
 
-class DatabaseDiffUtil(private val old: List<Task>, private val new: List<Task>) : DiffUtil.Callback() {
+class DatabaseDiffUtil(private val old: List<GenericReminderItem>, private val new: List<GenericReminderItem>) : DiffUtil.Callback() {
     override fun getOldListSize() = old.size
 
     override fun getNewListSize() = new.size
@@ -14,8 +14,8 @@ class DatabaseDiffUtil(private val old: List<Task>, private val new: List<Task>)
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition].id == new[newItemPosition].id &&
-                old[oldItemPosition].`when` == new[newItemPosition].`when`
+        return old[oldItemPosition].task.id == new[newItemPosition].task.id &&
+                old[oldItemPosition].task.`when` == new[newItemPosition].task.`when`
 
     }
 
