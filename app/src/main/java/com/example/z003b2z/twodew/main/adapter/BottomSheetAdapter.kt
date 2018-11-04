@@ -47,7 +47,7 @@ class BottomSheetAdapter(val items: ArrayList<GenericReminderItem>) : RecyclerVi
   }
 
   fun updateData(newData: ArrayList<GenericReminderItem>) {
-    val result = DiffUtil.calculateDiff(DatabaseDiffUtil(items, newData), false)
+    val result = DiffUtil.calculateDiff(DatabaseDiffUtil(items, newData), true)
     this.items.clear()
     this.items.addAll(newData)
     result.dispatchUpdatesTo(this)
