@@ -3,13 +3,13 @@ package com.example.z003b2z.twodew.main
 import android.app.NotificationManager
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
-import com.evernote.android.job.JobManager
 import com.example.z003b2z.twodew.db.TaskDatabase
 import com.example.z003b2z.twodew.db.entity.Task
 import com.example.z003b2z.twodew.job.TaskReminderJob
 import com.example.z003b2z.twodew.redux.Action
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.experimental.GlobalScope
+import com.evernote.android.job.JobManager
 import kotlinx.coroutines.experimental.launch
 import com.evernote.android.job.util.support.PersistableBundleCompat
 import com.example.z003b2z.twodew.main.adapter.BottomSheetAdapter
@@ -32,7 +32,7 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
   var currentTask = TaskItem("", "", "")
 
   val databaseSubject: BehaviorSubject<Long> = BehaviorSubject.create()
-  val bottomSheetDatabaseBehaviorSubject: BehaviorSubject<List<Task>> = BehaviorSubject.create()
+  val bottomSheetDatabaseBehaviorSubject: BehaviorSubject<ArrayList<GenericReminderItem>> = BehaviorSubject.create()
 
   /**
    * Given the current state, return the previous logical state
@@ -82,17 +82,17 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
     }
   }
 
-  fun fetchTasks(databaseBehaviorSubject: BehaviorSubject<List<Task>>) {
+  fun fetchTasks(databaseBehaviorSubject: BehaviorSubject<ArrayList<GenericReminderItem>>) {
     GlobalScope.launch {
       val taskResult = db.taskDao().selectAll()
-      databaseBehaviorSubject.onNext(taskResult)
+      databaseBehaviorSubject.onNext(PeriodParser.sortDates(ArrayList(taskResult)))
     }
   }
 
   fun scheduleJob(id: Long) {
     TaskReminderJob.scheduleJob(
       buildParams(currentTask, id),
-      PeriodParser.getDurationFromWhem(currentTask.`when`),
+      PeriodParser.getDurationFromWhen(currentTask.`when`),
       db,
       id
     )
@@ -109,18 +109,17 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
     adapter: BottomSheetAdapter,
     selectedItem: GenericItem
   ) {
-    val currentTaskId = adapter.items[viewHolder.adapterPosition].task.id.toInt()
-    val currentTask = adapter.items[viewHolder.adapterPosition].task
+    val currentTask = (adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task
 
     GlobalScope.launch {
       //don't want to call .copy here on currentTask because we want a new ID
       val taskCopy = currentTask.copy(`when` = selectedItem.text, timestamp = System.currentTimeMillis())
 
       //delete items from the task DB
-      deleteItem(currentTaskId)
+      deleteItem(currentTask.id.toInt())
 
       //find current job ID and cancel it
-      findAndCancelJob(currentTaskId)
+      findAndCancelJob(currentTask.id.toInt())
 
       //update item
       db.taskDao().insertTask(taskCopy)
@@ -130,7 +129,7 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
 
       TaskReminderJob.scheduleJob(
         MainViewModel.buildParams(currentTask.toTaskItem(), currentTask.id),
-        PeriodParser.getDurationFromWhem(currentTask.`when`),
+        PeriodParser.getDurationFromWhen(currentTask.`when`),
         db,
         taskCopy.id
       )
@@ -143,16 +142,12 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
   }
 
   private fun updateBottomSheet(newData: ArrayList<Task>, adapter: BottomSheetAdapter) {
-    val data = arrayListOf<GenericReminderItem>()
-    newData.forEach {
-      data.add(GenericReminderItem.Body(it))
-    }
-    adapter.updateData(data)
+    adapter.updateData(PeriodParser.sortDates(newData))
   }
 
   fun deleteItem(viewHolder: RecyclerView.ViewHolder, adapter: BottomSheetAdapter) {
     GlobalScope.launch {
-      val id = adapter.items[viewHolder.adapterPosition].task.id.toInt()
+      val id = (adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task.id.toInt()
 
       //delete items from the task DB
       deleteItem(id)
@@ -183,7 +178,9 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
     db.taskDao().deleteById(id)
   }
 
-  fun validTask(adapter: BottomSheetAdapter, viewHolder: RecyclerView.ViewHolder) = !adapter.items[viewHolder.adapterPosition].task.`when`.equals("never", ignoreCase = true)
+  fun validTask(adapter: BottomSheetAdapter, viewHolder: RecyclerView.ViewHolder): Boolean{
+    return !(adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task.`when`.equals("never", ignoreCase = true)
+  }
 
   companion object {
     const val INTENT_TEXT = "text"

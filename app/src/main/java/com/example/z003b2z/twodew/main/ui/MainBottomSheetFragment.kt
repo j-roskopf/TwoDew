@@ -1,10 +1,8 @@
 package com.example.z003b2z.twodew.main.ui
 
-import android.app.Dialog
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.z003b2z.twodew.db.entity.Task
 import com.example.z003b2z.twodew.main.adapter.BottomSheetAdapter
 import com.example.z003b2z.twodew.main.adapter.SwipeToDismissCallback
 import com.example.z003b2z.twodew.main.adapter.SwipeToSnoozeCallback
@@ -55,12 +53,8 @@ class MainBottomSheetFragment : BottomSheetDialogFragment() {
     bottomSheetContent.layoutManager = LinearLayoutManager(context)
   }
 
-  fun updateData(newData: ArrayList<Task>) {
-    val data = arrayListOf<GenericReminderItem>()
-    newData.forEach {
-      data.add(GenericReminderItem.Body(it))
-    }
-    adapter.updateData(data)
+  fun updateData(newData: ArrayList<GenericReminderItem>) {
+    adapter.updateData(newData)
   }
 
   private fun setupBottomSheet() {

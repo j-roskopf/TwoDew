@@ -5,5 +5,5 @@ import com.example.z003b2z.twodew.db.entity.Task
 
 sealed class GenericReminderItem(val task: Task) {
   class Body(task: Task) : GenericReminderItem(task)
-  class Header(task: Task) : GenericReminderItem(task)
+  class Header(task: Task, val displayString: String) : GenericReminderItem(task)
 }

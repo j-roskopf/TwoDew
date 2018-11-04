@@ -11,11 +11,10 @@ import com.example.z003b2z.twodew.db.entity.Task
 import com.example.z003b2z.twodew.main.model.GenericReminderItem
 import com.example.z003b2z.twodew.time.PeriodParser
 import kotlinx.android.synthetic.main.bottom_sheet_task_item.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_task_item_header.view.headerText
 import org.joda.time.LocalDateTime
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.PeriodFormatterBuilder
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
 
 const val TYPE_HEADER = 0
 const val TYPE_BODY = 1
@@ -25,9 +24,9 @@ class BottomSheetAdapter(val items: ArrayList<GenericReminderItem>) : RecyclerVi
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      TYPE_HEADER -> BottomSheetAdapterViewHolder(parent.inflate(R.layout.bottom_sheet_task_item, false))
-      TYPE_BODY -> BottomSheetAdapterViewHolder(parent.inflate(R.layout.bottom_sheet_task_item, false))
-      else -> throw IllegalArgumentException("Boo")
+      TYPE_HEADER -> BottomSheetHeaderViewHolder(parent.inflate(R.layout.bottom_sheet_task_item_header, false))
+      TYPE_BODY -> BottomSheetBodyViewHolder(parent.inflate(R.layout.bottom_sheet_task_item, false))
+      else -> throw IllegalArgumentException("Boo you suck")
     }
   }
 
@@ -42,20 +41,20 @@ class BottomSheetAdapter(val items: ArrayList<GenericReminderItem>) : RecyclerVi
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder) {
-      is BottomSheetAdapterViewHolder -> holder.bind(items[position].task)
-      is BottomSheetDateHeaderViewHolder -> holder.bind(items[position].task)
+      is BottomSheetBodyViewHolder -> holder.bind(items[position].task)
+      is BottomSheetHeaderViewHolder -> holder.bind((items[position] as GenericReminderItem.Header).displayString)
     }
   }
 
   fun updateData(newData: ArrayList<GenericReminderItem>) {
-    val result = DiffUtil.calculateDiff(DatabaseDiffUtil(items, newData))
+    val result = DiffUtil.calculateDiff(DatabaseDiffUtil(items, newData), false)
     this.items.clear()
     this.items.addAll(newData)
     result.dispatchUpdatesTo(this)
   }
 }
 
-class BottomSheetAdapterViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+class BottomSheetBodyViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
   private var dtf = DateTimeFormat.forPattern("MMM dd, hh:mm a")
 
   @SuppressLint("SetTextI18n")
@@ -69,12 +68,12 @@ class BottomSheetAdapterViewHolder(private val view: View) : RecyclerView.ViewHo
   }
 
   private fun getDuration(`when`: String, timestamp: Long): LocalDateTime {
-    return PeriodParser.getDateFromWhem(`when`, timestamp)
+    return PeriodParser.getDateFromWhen(`when`, timestamp)
   }
 }
 
-class BottomSheetDateHeaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-
-  fun bind(genericItem: Task) {
+class BottomSheetHeaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+  fun bind(displayText: String) {
+    view.headerText.text = displayText
   }
 }

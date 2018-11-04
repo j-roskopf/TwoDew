@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     compositeDisposable += mainViewModel.bottomSheetDatabaseBehaviorSubject.subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe({
-        bottomSheetFragment.updateData(ArrayList(it))
+        bottomSheetFragment.updateData(it)
         render(mainViewModel.reduce(MainAction.DrawerOpened))
       }, {
         Timber.e(it)

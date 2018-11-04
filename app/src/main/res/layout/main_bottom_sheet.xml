@@ -7,19 +7,9 @@
   android:background="@android:color/transparent"
   app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-  <!-- hack to make the bottom sheet display at full height -->
-  <View
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginRight="16dp"
-    android:background="@android:color/white" />
-
-
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
     android:layout_marginTop="16dp"
     android:layout_marginRight="16dp"
@@ -27,73 +17,58 @@
 
     <TextView
       android:id="@+id/bottomSheetHeader"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
       android:text="Current Reminders"
       android:textAppearance="@android:style/TextAppearance.Material.Title"
-      android:textColor="@android:color/black"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:textColor="@android:color/black" />
 
     <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/bottomSheetSubHeader"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_below="@+id/bottomSheetHeader"
+      android:layout_alignParentStart="true"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:text="Swipe to take action"
       android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-      android:textColor="@android:color/black"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/bottomSheetHeader" />
+      android:textColor="@android:color/black" />
 
     <View
       android:id="@+id/spacer"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:layout_marginStart="16dp"
+      android:layout_below="@+id/bottomSheetSubHeader"
       android:layout_marginTop="16dp"
-      android:background="#666666"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/bottomSheetSubHeader" />
+      android:background="#666666" />
 
 
     <ProgressBar
       android:id="@+id/bottomSheetProgress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
       android:layout_marginEnd="8dp"
-      android:layout_marginBottom="8dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/spacer"
-      tools:visibility="gone" />
-
+      android:layout_marginBottom="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/bottomSheetContent"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_below="@id/spacer"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
-      android:layout_marginEnd="8dp"
-      android:layout_marginBottom="8dp"
-      android:visibility="gone"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/spacer"
-      tools:visibility="visible" />
+      android:layout_marginEnd="8dp" />
 
+  </RelativeLayout>
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
