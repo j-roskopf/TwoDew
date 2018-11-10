@@ -51,11 +51,11 @@ class MainAdapter(private val items: ArrayList<GenericItem>, private val actionH
 
 class MainAdapterViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
     fun bind(genericItem: GenericItem) {
-        view.taskItemBaseLayout.setBackgroundColor(getBackgroundMaterialColor("700", view.context))
+        view.taskItemBaseLayout.setBackgroundColor(getBackgroundMaterialColor(view.context))
         view.taskItemText.text = genericItem.text
     }
 
-    private fun getBackgroundMaterialColor(typeColor: String, context: Context): Int {
+    private fun getBackgroundMaterialColor(context: Context): Int {
         var returnColor = Color.BLACK
         val arrayId = context.resources.getIdentifier("nord", "array", context.applicationContext.packageName)
 

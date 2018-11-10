@@ -9,6 +9,5 @@ sealed class MainScreenState(val text: String) : State() {
     class What(text: String) : MainScreenState(text)
     class When(text: String) : MainScreenState(text)
     object Confirmation : MainScreenState(STATE_NONE)
-    object DrawerOpen : MainScreenState(STATE_NONE)
     object LoadingTasks : MainScreenState(STATE_NONE)
 }

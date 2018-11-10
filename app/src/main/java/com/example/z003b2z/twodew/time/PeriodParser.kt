@@ -2,6 +2,8 @@ package com.example.z003b2z.twodew.time
 
 import com.example.z003b2z.twodew.db.entity.Task
 import com.example.z003b2z.twodew.main.model.GenericReminderItem
+import org.joda.time.DateTime
+import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.joda.time.format.PeriodFormatter
 import org.joda.time.format.PeriodFormatterBuilder
@@ -71,6 +73,11 @@ class PeriodParser {
             currentTask.timestamp
           ).toDateTime().millis
 
+          val date = getDateFromWhen(
+            currentTask.`when`,
+            currentTask.timestamp
+          ).toLocalDate()
+
           when {
             elapsedTime < todayDateTime.toDateTime().millis -> {
               if (map[overdueKey] == null) {
@@ -78,22 +85,19 @@ class PeriodParser {
               }
               map[overdueKey]?.add(GenericReminderItem.Body(currentTask))
             }
-            elapsedTime >= todayDateTime.toDateTime().millis
-              && elapsedTime < tomorrowDateTime.toDateTime().millis -> {
+            date.matchesDate(todayDateTime) -> {
               if (map[todayKey] == null) {
                 map[todayKey] = ArrayList()
               }
               map[todayKey]?.add(GenericReminderItem.Body(currentTask))
             }
-            elapsedTime >= tomorrowDateTime.toDateTime().millis
-              && elapsedTime < twoDaysFromNow.toDateTime().millis -> {
+            date.matchesDate(tomorrowDateTime) -> {
               if (map[tomorrowKey] == null) {
                 map[tomorrowKey] = ArrayList()
               }
               map[tomorrowKey]?.add(GenericReminderItem.Body(currentTask))
             }
-            elapsedTime >= twoDaysFromNow.toDateTime().millis
-              && elapsedTime < nextWeekDateTime.toDateTime().millis -> {
+            elapsedTime < nextWeekDateTime.toDateTime().millis -> {
               if (map[thisWeekKey] == null) {
                 map[thisWeekKey] = ArrayList()
               }
@@ -120,4 +124,8 @@ class PeriodParser {
       return toReturn
     }
   }
+}
+
+fun LocalDate.matchesDate(dateTime: LocalDateTime): Boolean {
+  return dayOfYear().get() == dateTime.dayOfYear().get()
 }

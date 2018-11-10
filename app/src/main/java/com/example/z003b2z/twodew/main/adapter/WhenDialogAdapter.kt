@@ -34,11 +34,11 @@ class WhenDialogAdapter(private val items: ArrayList<GenericItem>, val listener:
 
 class WhenDialogAdapterViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
   fun bind(genericItem: GenericItem) {
-    view.taskItemBaseLayout.setBackgroundColor(getMatColor("500", view.context))
+    view.taskItemBaseLayout.setBackgroundColor(getMatColor(view.context))
     view.taskItemText.text = genericItem.text
   }
 
-  private fun getMatColor(typeColor: String, context: Context): Int {
+  private fun getMatColor(context: Context): Int {
     var returnColor = Color.BLACK
     val arrayId = context.resources.getIdentifier("nord", "array", context.applicationContext.packageName)
 

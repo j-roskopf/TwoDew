@@ -16,40 +16,41 @@ import kotlinx.coroutines.experimental.launch
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
-
 class TaskReminderJob : Job(), KoinComponent {
 
-    private val notificationBuilder: NotificationBuilder by inject()
+  private val notificationBuilder: NotificationBuilder by inject()
 
-    @NonNull
-    override fun onRunJob(params: Params): Result {
-        val id = ((Math.random() * 100) + 100).toInt()
+  @NonNull
+  override fun onRunJob(params: Params): Result {
+    val id = ((Math.random() * 100) + 100).toInt()
+    val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val builder = notificationBuilder.build(context,
-                -1,
-                "reminding ${params.extras[JOB_PARAM_WHO]} about ${params.extras[JOB_PARAM_WHAT]}"
-        )
-        val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val builder = notificationBuilder.build(
+      context,
+      -1,
+      "reminding ${params.extras[JOB_PARAM_WHO]} about ${params.extras[JOB_PARAM_WHAT]}",
+      mNotificationManager
+    )
 
-        mNotificationManager.notify(id, builder.build())
+    mNotificationManager.notify(id, builder.build())
 
-        return Result.SUCCESS
+    return Result.SUCCESS
+  }
+
+  companion object {
+
+    val TAG = "task_reminder"
+
+    fun scheduleJob(extras: PersistableBundleCompat, durationFromWhen: Long, database: TaskDatabase, taskId: Long) {
+      val id = JobRequest.Builder(TAG)
+        .setExact(durationFromWhen)
+        .setExtras(extras)
+        .build()
+        .schedule()
+
+      GlobalScope.launch {
+        database.jobDao().insertJob(JobEntity(id, taskId.toInt()))
+      }
     }
-
-    companion object {
-
-        val TAG = "task_reminder"
-
-        fun scheduleJob(extras: PersistableBundleCompat, durationFromWhen: Long, database: TaskDatabase, taskId: Long) {
-            val id = JobRequest.Builder(TAG)
-                    .setExact(durationFromWhen)
-                    .setExtras(extras)
-                    .build()
-                    .schedule()
-
-            GlobalScope.launch {
-                database.jobDao().insertJob(JobEntity(id, taskId.toInt()))
-            }
-        }
-    }
+  }
 }

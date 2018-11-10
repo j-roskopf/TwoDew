@@ -1,52 +1,63 @@
 package com.example.z003b2z.twodew.android
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import com.example.z003b2z.twodew.R
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.view.animation.OvershootInterpolator
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.z003b2z.twodew.di.tasks.WhenItemProvider
+import com.example.z003b2z.twodew.main.adapter.WhenDialogAdapter
+import com.example.z003b2z.twodew.main.model.GenericItem
+import jp.wasabeef.recyclerview.animators.LandingAnimator
+import kotlinx.android.synthetic.main.custom_input_layout_dialog.view.customPromptRecyclerView
+import kotlinx.android.synthetic.main.custom_input_layout_dialog.view.customPromptTextInput
+import kotlinx.android.synthetic.main.when_layout_dialog.view.whenDialogRecyclerView
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
-interface ClickListener {
-    fun clicked(text: String)
-}
+@SuppressLint("InflateParams")
+class PromptDialog(context: Context, val listener: (input: String?, `when`: String?) -> Unit) : AlertDialog(context),
+  KoinComponent {
 
-class PromptDialog(context: Context, title: Int, message: Int, private val clickListener: ClickListener) : AlertDialog.Builder(context) {
-    private val input: EditText
+  private val whenItemProvider: WhenItemProvider by inject()
+  lateinit var adapter: WhenDialogAdapter
 
-    init {
-        this.setTitle(title)
-        this.setMessage(message)
+  init {
+    val view = LayoutInflater.from(context).inflate(R.layout.custom_input_layout_dialog, null)
+    setView(view)
 
-        input = EditText(context)
-        input.setSingleLine()
+    setupRecyclerView(view)
+    setCancelButton()
+  }
 
-        val container = FrameLayout(context)
-        val params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        params.leftMargin = context.resources.getDimensionPixelSize(R.dimen.dialog_margin)
-        params.rightMargin = context.resources.getDimensionPixelSize(R.dimen.dialog_margin) * 2
-        input.layoutParams = params
-
-        container.addView(input)
-        this.setView(container)
-
-        this.setPositiveButton(R.string.ok) { dialog: DialogInterface, which: Int ->
-            onClick(dialog, which)
-        }
-        this.setNegativeButton(R.string.cancel) { dialog: DialogInterface, which: Int ->
-            onClick(dialog, which)
-        }
+  private fun setCancelButton() {
+    setCancelable(true)
+    setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+      listener(null, null)
+      dismiss()
     }
-
-    fun onClick(dialog: DialogInterface, which: Int) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
-            clickListener.clicked(input.text.toString())
-        } else {
-            dialog.dismiss()
-        }
+    setOnCancelListener {
+      listener(null, null)
+      dismiss()
     }
+  }
+
+  private fun setupRecyclerView(view: View) {
+    view.customPromptRecyclerView.layoutManager = GridLayoutManager(context, 4)
+    adapter = WhenDialogAdapter(whenItemProvider.provideListOfWhenItems()) {
+      listener(view.customPromptTextInput.text.toString(), it.text)
+      dismiss()
+    }
+    view.customPromptRecyclerView.adapter = adapter
+
+    val animator = LandingAnimator(OvershootInterpolator(1f))
+    view.customPromptRecyclerView.itemAnimator = animator
+  }
 }

@@ -16,6 +16,7 @@ import com.example.z003b2z.twodew.main.adapter.BottomSheetAdapter
 import com.example.z003b2z.twodew.main.model.GenericItem
 import com.example.z003b2z.twodew.main.model.GenericReminderItem
 import com.example.z003b2z.twodew.main.model.TaskItem
+import com.example.z003b2z.twodew.main.ui.MainBottomSheetFragment
 import com.example.z003b2z.twodew.time.PeriodParser
 import kotlinx.coroutines.experimental.Dispatchers
 
@@ -62,7 +63,6 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
       is MainAction.WhoClicked -> MainScreenState.What(action.text)
       is MainAction.WhatClicked -> MainScreenState.When(action.text)
       is MainAction.WhenClicked -> MainScreenState.Confirmation
-      is MainAction.DrawerOpened -> MainScreenState.DrawerOpen
       is MainAction.FetchTasks -> MainScreenState.LoadingTasks
       else -> currentState
     }
@@ -72,7 +72,7 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
   }
 
   fun buildNotificationText(): String {
-    return currentTask.who + " " + currentTask.what + " " + currentTask.`when`
+    return currentTask.who + " " + currentTask.what
   }
 
   fun insertTask(who: String, what: String, `when`: String) {
@@ -85,7 +85,9 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
   fun fetchTasks(databaseBehaviorSubject: BehaviorSubject<ArrayList<GenericReminderItem>>) {
     GlobalScope.launch {
       val taskResult = db.taskDao().selectAll()
-      databaseBehaviorSubject.onNext(PeriodParser.sortDates(ArrayList(taskResult)))
+      GlobalScope.launch(Dispatchers.Main) {
+        databaseBehaviorSubject.onNext(PeriodParser.sortDates(ArrayList(taskResult)))
+      }
     }
   }
 
@@ -145,9 +147,9 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
     adapter.updateData(PeriodParser.sortDates(newData))
   }
 
-  fun deleteItem(viewHolder: RecyclerView.ViewHolder, adapter: BottomSheetAdapter) {
+  fun deleteItem(viewHolder: RecyclerView.ViewHolder, fragment: MainBottomSheetFragment) {
     GlobalScope.launch {
-      val id = (adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task.id.toInt()
+      val id = (fragment.adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task.id.toInt()
 
       //delete items from the task DB
       deleteItem(id)
@@ -162,7 +164,7 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
       val allData = ArrayList(db.taskDao().selectAll())
 
       GlobalScope.launch(Dispatchers.Main) {
-        updateBottomSheet(allData, adapter)
+        fragment.updateData(PeriodParser.sortDates(allData))
       }
     }
   }

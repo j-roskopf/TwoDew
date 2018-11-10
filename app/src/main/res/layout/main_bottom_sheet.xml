@@ -6,13 +6,26 @@
   android:background="@android:color/transparent"
   app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" />
+
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_marginLeft="16dp"
     android:layout_marginTop="16dp"
     android:layout_marginRight="16dp"
     android:background="@android:color/white">
+
+    <View
+      android:id="@+id/bottomSheetSlider"
+      android:layout_width="128dp"
+      android:layout_height="4dp"
+      android:layout_centerHorizontal="true"
+      android:background="@drawable/rounded_rectangle" />
 
     <ProgressBar
       android:id="@+id/bottomSheetProgress"
@@ -22,17 +35,38 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
       android:layout_marginEnd="8dp"
-      android:layout_marginBottom="8dp" />
+      android:layout_marginBottom="8dp"
+      android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/bottomSheetContent"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_below="@+id/bottomSheetSlider"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
-      android:layout_marginEnd="8dp" />
+      android:layout_marginEnd="8dp"
+      android:visibility="gone" />
+
+    <com.airbnb.lottie.LottieAnimationView
+      android:id="@+id/bottomSheetEmptyView"
+      android:layout_width="248dp"
+      android:layout_height="248dp"
+      android:layout_centerInParent="true"
+      android:layout_marginTop="64dp"
+      app:lottie_autoPlay="false"
+      app:lottie_loop="true"
+      app:lottie_rawRes="@raw/empty_box" />
+
+    <TextView
+      android:id="@+id/bottomSheetEmptyViewText"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/bottomSheetEmptyView"
+      android:textColor="@android:color/black"
+      android:layout_centerHorizontal="true"
+      android:text="No reminders!" />
 
   </RelativeLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

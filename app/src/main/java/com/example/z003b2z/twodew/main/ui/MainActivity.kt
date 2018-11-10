@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import android.view.animation.OvershootInterpolator
-import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.main_confirmation.*
 import androidx.core.content.ContextCompat
 import com.example.z003b2z.twodew.android.extensions.plusAssign
@@ -36,6 +35,7 @@ import com.example.z003b2z.twodew.android.WhenDialog
 import com.example.z003b2z.twodew.android.extensions.changeStatusBarColor
 import com.example.z003b2z.twodew.main.adapter.SwipeToDismissCallback
 import com.example.z003b2z.twodew.main.adapter.SwipeToSnoozeCallback
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 
 //koin
 //new material design
@@ -90,13 +90,14 @@ class MainActivity : AppCompatActivity() {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe({
         bottomSheetFragment.updateData(it)
-        render(mainViewModel.reduce(MainAction.DrawerOpened))
       }, {
         Timber.e(it)
       })
 
     mainMenuIcon.setOnClickListener {
-      render(mainViewModel.reduce(MainAction.FetchTasks))
+      if(!bottomSheetFragment.isAdded) {
+        render(mainViewModel.reduce(MainAction.FetchTasks))
+      }
     }
   }
 
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
   private fun setupBottomSheet() {
     val swipeToDismissHandler = object : SwipeToDismissCallback(this) {
       override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        mainViewModel.deleteItem(viewHolder, bottomSheetFragment.adapter)
+        mainViewModel.deleteItem(viewHolder, bottomSheetFragment)
       }
     }
     val swipeToSnoozeHandler = object : SwipeToSnoozeCallback(this) {
@@ -132,14 +133,17 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun buildNotification(id: Long) {
+    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
     val builder = notificationBuilder.build(
       this,
       id.toInt(),
-      mainViewModel.buildNotificationText()
+      mainViewModel.buildNotificationText(),
+      notificationManager
     )
-    val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.notify(id.toInt(), builder.build())
 
-    mNotificationManager.notify(id.toInt(), builder.build())
+
 
     if (!mainViewModel.currentTask.`when`.equals("never", ignoreCase = true)) {
       mainViewModel.scheduleJob(id)
@@ -151,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     adapter = MainAdapter(arrayListOf(), this::navigationAction, mainViewModel.currentState)
     mainRecyclerView.adapter = adapter
 
-    val animator = LandingAnimator(OvershootInterpolator(1f))
+    val animator = SlideInLeftAnimator(OvershootInterpolator(1f))
     mainRecyclerView.itemAnimator = animator
   }
 
@@ -199,7 +203,6 @@ class MainActivity : AppCompatActivity() {
       is MainScreenState.What -> renderWhatState()
       is MainScreenState.When -> renderWhenState()
       is MainScreenState.Confirmation -> renderConfirmationState()
-      is MainScreenState.DrawerOpen -> renderDrawerOpen()
       is MainScreenState.LoadingTasks -> renderLoadingTasks()
     }
   }
@@ -215,10 +218,6 @@ class MainActivity : AppCompatActivity() {
 
     bottomSheetFragment.show(supportFragmentManager, "")
     setupBottomSheet()
-  }
-
-  private fun renderDrawerOpen() {
-    bottomSheetFragment.setStateVisibility(base = View.VISIBLE)
   }
 
   private fun renderConfirmationState() {

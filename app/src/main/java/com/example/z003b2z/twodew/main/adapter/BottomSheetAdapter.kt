@@ -1,6 +1,8 @@
 package com.example.z003b2z.twodew.main.adapter
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -75,5 +77,21 @@ class BottomSheetBodyViewHolder(private val view: View) : RecyclerView.ViewHolde
 class BottomSheetHeaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
   fun bind(displayText: String) {
     view.headerText.text = displayText
+    if(displayText.equals("never", ignoreCase = true)) {
+      view.headerText.setOnLongClickListener {
+        AlertDialog.Builder(view.context)
+          .setTitle("Confirmation")
+          .setMessage("Delete all items in this group?")
+          .setPositiveButton("Yup") { _, _ ->
+            //TODO Joe implement me
+          }
+          .setNegativeButton("Nope") { dialogInterface: DialogInterface, _: Int ->
+            dialogInterface.dismiss()
+          }
+          .create()
+          .show()
+        true
+      }
+    }
   }
 }

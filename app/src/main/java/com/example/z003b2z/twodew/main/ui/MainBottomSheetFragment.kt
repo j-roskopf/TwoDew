@@ -15,6 +15,8 @@ import com.example.z003b2z.twodew.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.main_bottom_sheet.bottomSheetContent
+import kotlinx.android.synthetic.main.main_bottom_sheet.bottomSheetEmptyView
+import kotlinx.android.synthetic.main.main_bottom_sheet.bottomSheetEmptyViewText
 import kotlinx.android.synthetic.main.main_bottom_sheet.bottomSheetProgress
 
 //TODO JOE GIVE SOME ROUNDED CORNERS
@@ -37,6 +39,8 @@ class MainBottomSheetFragment : BottomSheetDialogFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
+    setStateVisibility(loading = View.VISIBLE)
+
     setupRecyclerView()
 
     setupBottomSheet()
@@ -54,7 +58,14 @@ class MainBottomSheetFragment : BottomSheetDialogFragment() {
   }
 
   fun updateData(newData: ArrayList<GenericReminderItem>) {
-    adapter.updateData(newData)
+    if (newData.isEmpty()) {
+      setStateVisibility(empty = View.VISIBLE)
+      bottomSheetEmptyView.useHardwareAcceleration(true)
+      bottomSheetEmptyView.playAnimation()
+    } else {
+      setStateVisibility(base = View.VISIBLE)
+      adapter.updateData(newData)
+    }
   }
 
   private fun setupBottomSheet() {
@@ -62,12 +73,15 @@ class MainBottomSheetFragment : BottomSheetDialogFragment() {
     swipeToSnoozeCallback.attachToRecyclerView(bottomSheetContent)
   }
 
-  fun setStateVisibility(
+  private fun setStateVisibility(
     loading: Int = View.GONE,
-    base: Int = View.GONE
+    base: Int = View.GONE,
+    empty: Int = View.GONE
   ) {
     bottomSheetProgress.visibility = loading
     bottomSheetContent.visibility = base
+    bottomSheetEmptyView.visibility = empty
+    bottomSheetEmptyViewText.visibility = empty
   }
 
   fun setSwipeListeners(swipeToDismissHandler: SwipeToDismissCallback, swipeToSnoozeHandler: SwipeToSnoozeCallback) {

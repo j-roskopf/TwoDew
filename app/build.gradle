@@ -66,5 +66,7 @@ dependencies {
     implementation 'net.danlew:android.joda:2.10.0'
 
     implementation 'com.evernote:android-job:1.2.6'
+
+    implementation 'com.airbnb.android:lottie:2.8.0'
 }
 apply plugin: 'com.google.gms.google-services'

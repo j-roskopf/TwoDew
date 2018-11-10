@@ -1,110 +1,110 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/baseLayout"
-    android:background="@android:color/white"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/baseLayout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@android:color/white">
+
+  <include layout="@layout/main_confirmation" />
+
+  <com.google.android.material.bottomappbar.BottomAppBar
+    android:id="@+id/bottomAppBar"
+    style="@style/Widget.MaterialComponents.BottomAppBar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:layout_gravity="bottom"
+    app:backgroundTint="@color/colorAccent">
+
+    <ImageButton
+      android:id="@+id/mainMenuIcon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/ic_menu_white_24dp"
+      tools:ignore="ContentDescription" />
+
+  </com.google.android.material.bottomappbar.BottomAppBar>
+
+  <com.example.z003b2z.twodew.android.StateChangingFab
+    android:id="@+id/mainFab"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_edit_white_24dp"
+    app:layout_anchor="@id/bottomAppBar" />
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/mainBaseContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/main_confirmation" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/mainTextLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginLeft="8dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginRight="8dp"
+      android:orientation="horizontal"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
-        style="@style/Widget.MaterialComponents.BottomAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        app:backgroundTint="@color/colorAccent">
-
-        <ImageButton
-            android:id="@+id/mainMenuIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_menu_white_24dp"
-            tools:ignore="ContentDescription" />
-
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
-    <com.example.z003b2z.twodew.android.StateChangingFab
-        android:id="@+id/mainFab"
+      <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
+        android:id="@+id/mainWhoTextSwitcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_edit_white_24dp"
-        app:layout_anchor="@id/bottomAppBar" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:measureAllChildren="false"
+        android:text="123"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainBaseContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+      <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
+        android:id="@+id/mainWhatTextSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:measureAllChildren="false"
+        android:text="1234"
+        app:layout_constraintBottom_toBottomOf="@+id/mainWhoTextSwitcher"
+        app:layout_constraintStart_toEndOf="@+id/mainWhoTextSwitcher"
+        app:layout_constraintTop_toTopOf="@+id/mainWhoTextSwitcher" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/mainTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
-                android:id="@+id/mainWhoTextSwitcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:measureAllChildren="false"
-                android:text="123"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
-                android:id="@+id/mainWhatTextSwitcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:measureAllChildren="false"
-                android:text="1234"
-                app:layout_constraintBottom_toBottomOf="@+id/mainWhoTextSwitcher"
-                app:layout_constraintStart_toEndOf="@+id/mainWhoTextSwitcher"
-                app:layout_constraintTop_toTopOf="@+id/mainWhoTextSwitcher" />
-
-            <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
-                android:id="@+id/mainWhenTextSwitcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:measureAllChildren="false"
-                android:text="12355"
-                app:layout_constraintBottom_toBottomOf="@+id/mainWhatTextSwitcher"
-                app:layout_constraintStart_toEndOf="@+id/mainWhatTextSwitcher"
-                app:layout_constraintTop_toTopOf="@+id/mainWhatTextSwitcher" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mainRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="96dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mainTextLayout" />
+      <com.example.z003b2z.twodew.android.AnimatedTextSwitcher
+        android:id="@+id/mainWhenTextSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:measureAllChildren="false"
+        android:text="12355"
+        app:layout_constraintBottom_toBottomOf="@+id/mainWhatTextSwitcher"
+        app:layout_constraintStart_toEndOf="@+id/mainWhatTextSwitcher"
+        app:layout_constraintTop_toTopOf="@+id/mainWhatTextSwitcher" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/mainRecyclerView"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginLeft="8dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginRight="8dp"
+      android:layout_marginBottom="96dp"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/mainTextLayout" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

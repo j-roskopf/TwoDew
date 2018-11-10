@@ -16,6 +16,14 @@ class WhenItemProvider {
             GenericItem("2 ".plus(PeriodParser.HOUR_SUFFIX)),
             GenericItem("3 ".plus(PeriodParser.HOUR_SUFFIX)),
             GenericItem("4 ".plus(PeriodParser.HOUR_SUFFIX)),
-            GenericItem("5 ".plus(PeriodParser.HOUR_SUFFIX))
+            GenericItem("5 ".plus(PeriodParser.HOUR_SUFFIX)),
+            GenericItem("6 ".plus(PeriodParser.HOUR_SUFFIX)),
+            GenericItem("1 ".plus(PeriodParser.DAY_SUFFIX)),
+            GenericItem("2 ".plus(PeriodParser.DAY_SUFFIX)),
+            GenericItem("3 ".plus(PeriodParser.DAY_SUFFIX)),
+            GenericItem("4 ".plus(PeriodParser.DAY_SUFFIX)),
+            GenericItem("5 ".plus(PeriodParser.DAY_SUFFIX)),
+            GenericItem("6 ".plus(PeriodParser.DAY_SUFFIX)),
+            GenericItem("7 ".plus(PeriodParser.DAY_SUFFIX))
     )
 }
