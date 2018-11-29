@@ -12,12 +12,14 @@ import java.util.TreeMap
 class PeriodParser {
 
   companion object {
+    const val WEEK_SUFFIX = "w"
     const val DAY_SUFFIX = "d"
     const val HOUR_SUFFIX = "hr"
     const val MINUTE_SUFFIX = "min"
     const val SECOND_SUFFIX = "sec"
 
     private val formatter: PeriodFormatter = PeriodFormatterBuilder()
+      .appendWeeks().appendSuffix(PeriodParser.WEEK_SUFFIX)
       .appendDays().appendSuffix(PeriodParser.DAY_SUFFIX)
       .appendHours().appendSuffix(PeriodParser.HOUR_SUFFIX)
       .appendMinutes().appendSuffix(PeriodParser.MINUTE_SUFFIX)
@@ -72,6 +74,13 @@ class PeriodParser {
             currentTask.`when`,
             currentTask.timestamp
           ).toDateTime().millis
+
+          val test = getDateFromWhen(
+            currentTask.`when`,
+            currentTask.timestamp
+          ).toDateTime()
+
+          val test2 = LocalDateTime()
 
           val date = getDateFromWhen(
             currentTask.`when`,

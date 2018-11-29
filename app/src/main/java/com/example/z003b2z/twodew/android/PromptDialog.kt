@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.z003b2z.twodew.R
 import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.z003b2z.twodew.android.extensions.setDuration
 import com.example.z003b2z.twodew.di.tasks.WhenItemProvider
 import com.example.z003b2z.twodew.main.adapter.WhenDialogAdapter
 import com.example.z003b2z.twodew.main.model.GenericItem
@@ -57,7 +58,7 @@ class PromptDialog(context: Context, val listener: (input: String?, `when`: Stri
     }
     view.customPromptRecyclerView.adapter = adapter
 
-    val animator = LandingAnimator(OvershootInterpolator(1f))
+    val animator = LandingAnimator(OvershootInterpolator(1f)).setDuration()
     view.customPromptRecyclerView.itemAnimator = animator
   }
 }

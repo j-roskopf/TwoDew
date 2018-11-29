@@ -14,16 +14,17 @@ import timber.log.Timber
 import com.evernote.android.job.JobManager
 import com.example.z003b2z.twodew.job.TaskJobCreator
 
+class App : Application() {
+  override fun onCreate() {
+    super.onCreate()
+    JodaTimeAndroid.init(this)
+    JobManager.create(this).addJobCreator(TaskJobCreator())
 
-class App: Application() {
-    override fun onCreate() {
-        super.onCreate()
-        JodaTimeAndroid.init(this)
-        JobManager.create(this).addJobCreator(TaskJobCreator())
+    TaskDatabase.getInstance(this)
 
-        startKoin(this, listOf(TaskItemModule, WhoItemModule, WhenItemModule, AnimationModule, AppModule))
-        if (BuildConfig.DEBUG){
-            Timber.plant(DebugTree())
-        }
+    startKoin(this, listOf(TaskItemModule, WhoItemModule, WhenItemModule, AnimationModule, AppModule))
+    if (BuildConfig.DEBUG) {
+      Timber.plant(DebugTree())
     }
+  }
 }

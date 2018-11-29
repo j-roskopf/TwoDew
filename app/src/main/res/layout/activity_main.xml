@@ -24,6 +24,16 @@
       android:src="@drawable/ic_menu_white_24dp"
       tools:ignore="ContentDescription" />
 
+    <ImageButton
+      android:id="@+id/mainMenuSettings"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:src="@drawable/ic_settings_white_24dp"
+      tools:ignore="ContentDescription" />
+
   </com.google.android.material.bottomappbar.BottomAppBar>
 
   <com.example.z003b2z.twodew.android.StateChangingFab

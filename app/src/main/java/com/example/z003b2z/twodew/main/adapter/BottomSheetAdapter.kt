@@ -57,7 +57,7 @@ class BottomSheetAdapter(val items: ArrayList<GenericReminderItem>) : RecyclerVi
 }
 
 class BottomSheetBodyViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-  private var dtf = DateTimeFormat.forPattern("MMM dd, hh:mm a")
+  private var dtf = DateTimeFormat.forPattern("MMM dd YYYY, hh:mm a")
 
   @SuppressLint("SetTextI18n")
   fun bind(genericItem: Task) {

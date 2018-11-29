@@ -1,5 +1,16 @@
 <resources>
-    <string name="app_name">TwoDew</string>
-    <string name="ok">Okay</string>
-    <string name="cancel">Cancel</string>
+  <string name="app_name">TwoDew</string>
+  <string name="ok">Okay</string>
+  <string name="cancel">Cancel</string>
+  <string name="title_activity_settings">SettingsActivity</string>
+  <string name="action_settings">Settings</string>
+
+  <string-array name="time_array">
+    <item>w</item>
+    <item>d</item>
+    <item>hr</item>
+    <item>min</item>
+    <item>sec</item>
+  </string-array>
+
 </resources>

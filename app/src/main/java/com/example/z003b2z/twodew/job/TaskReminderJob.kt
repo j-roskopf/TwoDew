@@ -2,6 +2,7 @@ package com.example.z003b2z.twodew.job
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.annotation.NonNull
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobRequest
@@ -11,6 +12,7 @@ import com.example.z003b2z.twodew.db.entity.JobEntity
 import com.example.z003b2z.twodew.main.MainViewModel.Companion.JOB_PARAM_WHAT
 import com.example.z003b2z.twodew.main.MainViewModel.Companion.JOB_PARAM_WHO
 import com.example.z003b2z.twodew.notification.NotificationBuilder
+import com.example.z003b2z.twodew.settings.PERSISTENCE_KEY
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import org.koin.standalone.KoinComponent
@@ -29,7 +31,8 @@ class TaskReminderJob : Job(), KoinComponent {
       context,
       -1,
       "reminding ${params.extras[JOB_PARAM_WHO]} about ${params.extras[JOB_PARAM_WHAT]}",
-      mNotificationManager
+      mNotificationManager,
+      false
     )
 
     mNotificationManager.notify(id, builder.build())

@@ -8,9 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z003b2z.twodew.R
 import com.example.z003b2z.twodew.animation.Reveal
-import com.example.z003b2z.twodew.di.tasks.TaskItemProvider
-import com.example.z003b2z.twodew.di.tasks.WhenItemProvider
-import com.example.z003b2z.twodew.di.tasks.WhoItemProvider
 import com.example.z003b2z.twodew.main.adapter.MainAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
@@ -25,6 +22,8 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.widget.Toast
 import com.example.z003b2z.twodew.main.MainAction
 import com.example.z003b2z.twodew.main.MainScreenState
@@ -33,32 +32,27 @@ import com.example.z003b2z.twodew.notification.NotificationBuilder
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z003b2z.twodew.android.WhenDialog
 import com.example.z003b2z.twodew.android.extensions.changeStatusBarColor
+import com.example.z003b2z.twodew.android.startActivityWithAnimation
+import com.example.z003b2z.twodew.db.TaskDatabase
 import com.example.z003b2z.twodew.main.adapter.SwipeToDismissCallback
 import com.example.z003b2z.twodew.main.adapter.SwipeToSnoozeCallback
+import com.example.z003b2z.twodew.settings.PERSISTENCE_KEY
+import com.example.z003b2z.twodew.settings.SettingsActivity
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
-
-//koin
-//new material design
-//room
-//coroutines
-//make sure to handle app restart for notifications
-//allow user defined action words / time units
-//who -> what -> when
-//firebase
-//todo yet
-//settings page - pref for closing , custom tiles
-//reminder notification
-//manage current notificationsc
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
+import android.app.Activity
+import com.example.z003b2z.twodew.android.RESULT_DATA_CHANGED
+import com.example.z003b2z.twodew.android.extensions.setDuration
 
 class MainActivity : AppCompatActivity() {
   private lateinit var adapter: MainAdapter
 
   private val mainViewModel: MainViewModel by viewModel()
   private val notificationBuilder: NotificationBuilder by inject()
-  private val taskItemProvider: TaskItemProvider by inject()
-  private val whoItemProvider: WhoItemProvider by inject()
-  private val whenItemProvider: WhenItemProvider by inject()
   private val revealAnimation: Reveal by inject()
+  private val sharedPreferences: SharedPreferences by inject()
 
   private val compositeDisposable = CompositeDisposable()
 
@@ -71,8 +65,6 @@ class MainActivity : AppCompatActivity() {
     setSupportActionBar(bottomAppBar)
 
     setupRecyclerView()
-
-    render(mainViewModel.currentState)
 
     compositeDisposable += mainViewModel.databaseSubject.subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
@@ -99,11 +91,17 @@ class MainActivity : AppCompatActivity() {
         render(mainViewModel.reduce(MainAction.FetchTasks))
       }
     }
-  }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    compositeDisposable.dispose()
+    mainMenuSettings.setOnClickListener {
+      startActivityWithAnimation(Intent(this, SettingsActivity::class.java))
+    }
+
+    compositeDisposable += TaskDatabase.dbReadySubject.observeOn(AndroidSchedulers.mainThread())
+      .subscribe({
+        render(mainViewModel.currentState)
+      }, {
+        Timber.e(it)
+      })
   }
 
   private fun setupBottomSheet() {
@@ -117,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         if (mainViewModel.validTask(bottomSheetFragment.adapter, viewHolder)) {
           WhenDialog(this@MainActivity) { selectedItem ->
             if(selectedItem != null) {
-              mainViewModel.snoozeItem(viewHolder, bottomSheetFragment.adapter, selectedItem)
+              mainViewModel.snoozeItem(viewHolder, bottomSheetFragment, selectedItem)
             } else {
               bottomSheetFragment.adapter.notifyItemChanged(viewHolder.adapterPosition)
             }
@@ -139,11 +137,10 @@ class MainActivity : AppCompatActivity() {
       this,
       id.toInt(),
       mainViewModel.buildNotificationText(),
-      notificationManager
+      notificationManager,
+      sharedPreferences.getBoolean(PERSISTENCE_KEY, false)
     )
     notificationManager.notify(id.toInt(), builder.build())
-
-
 
     if (!mainViewModel.currentTask.`when`.equals("never", ignoreCase = true)) {
       mainViewModel.scheduleJob(id)
@@ -155,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     adapter = MainAdapter(arrayListOf(), this::navigationAction, mainViewModel.currentState)
     mainRecyclerView.adapter = adapter
 
-    val animator = SlideInLeftAnimator(OvershootInterpolator(1f))
+    val animator = SlideInLeftAnimator(OvershootInterpolator(1f)).setDuration()
     mainRecyclerView.itemAnimator = animator
   }
 
@@ -228,18 +225,33 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun renderWhenState() {
-    setStateVisibility(base = View.VISIBLE)
-    adapter.updateData(whenItemProvider.provideListOfWhenItems(), mainViewModel.currentState)
+    GlobalScope.launch {
+      val data = mainViewModel.provideListOfWhenItems()
+      GlobalScope.launch(Dispatchers.Main){
+        setStateVisibility(base = View.VISIBLE)
+        adapter.updateData(data, mainViewModel.currentState)
+      }
+    }
   }
 
   private fun renderWhatState() {
-    setStateVisibility(base = View.VISIBLE)
-    adapter.updateData(taskItemProvider.provideListOfTaskItems(), mainViewModel.currentState)
+    GlobalScope.launch {
+      val data = mainViewModel.provideListOfTaskItems()
+      GlobalScope.launch(Dispatchers.Main){
+        setStateVisibility(base = View.VISIBLE)
+        adapter.updateData(data, mainViewModel.currentState)
+      }
+    }
   }
 
   private fun renderWhoState() {
-    setStateVisibility(base = View.VISIBLE)
-    adapter.updateData(whoItemProvider.provideListOfWhoItems(), mainViewModel.currentState)
+    GlobalScope.launch {
+      val data = mainViewModel.provideListOfWhoItems()
+      GlobalScope.launch(Dispatchers.Main){
+        setStateVisibility(base = View.VISIBLE)
+        adapter.updateData(data, mainViewModel.currentState)
+      }
+    }
   }
 
   private fun setWhoText(text: String) {
@@ -267,6 +279,7 @@ class MainActivity : AppCompatActivity() {
 
     baseRevealConfirmationLayout.visibility = confirmation
     mainMenuIcon.visibility = base
+    mainMenuSettings.visibility = base
     mainBaseContent.visibility = base
 
     if (confirmation == View.GONE) {
@@ -274,5 +287,17 @@ class MainActivity : AppCompatActivity() {
     } else {
       changeStatusBarColor(ContextCompat.getColor(this, R.color.confirmation), false)
     }
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+    if (requestCode == RESULT_DATA_CHANGED && resultCode == Activity.RESULT_OK) {
+      render(mainViewModel.currentState)
+    }
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    compositeDisposable.dispose()
   }
 }

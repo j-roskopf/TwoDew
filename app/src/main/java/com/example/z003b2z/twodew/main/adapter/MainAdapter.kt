@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z003b2z.twodew.R
 import com.example.z003b2z.twodew.android.extensions.inflate
+import com.example.z003b2z.twodew.db.entity.GenericSettingsEntity
 import com.example.z003b2z.twodew.main.MainAction
 import com.example.z003b2z.twodew.main.MainActionHandler
 import com.example.z003b2z.twodew.main.MainScreenState
-import com.example.z003b2z.twodew.main.model.GenericItem
 import kotlinx.android.synthetic.main.task_item.view.*
 
 
-class MainAdapter(private val items: ArrayList<GenericItem>, private val actionHandler: MainActionHandler, screenState: MainScreenState): RecyclerView.Adapter<MainAdapterViewHolder>() {
+class MainAdapter(private val items: ArrayList<GenericSettingsEntity>, private val actionHandler: MainActionHandler, screenState: MainScreenState): RecyclerView.Adapter<MainAdapterViewHolder>() {
 
     private var screenState: MainScreenState
 
@@ -33,14 +33,14 @@ class MainAdapter(private val items: ArrayList<GenericItem>, private val actionH
         holder.bind(items[position])
         holder.itemView.setOnClickListener {
             when(screenState) {
-                is MainScreenState.Who -> actionHandler(MainAction.WhoClicked(items[position].text))
-                is MainScreenState.What -> actionHandler(MainAction.WhatClicked(items[position].text))
-                is MainScreenState.When -> actionHandler(MainAction.WhenClicked(items[position].text))
+                is MainScreenState.Who -> actionHandler(MainAction.WhoClicked(items[holder.adapterPosition].text))
+                is MainScreenState.What -> actionHandler(MainAction.WhatClicked(items[holder.adapterPosition].text))
+                is MainScreenState.When -> actionHandler(MainAction.WhenClicked(items[holder.adapterPosition].text))
             }
         }
     }
 
-    fun updateData(newData: ArrayList<GenericItem>, state: MainScreenState) {
+    fun updateData(newData: List<GenericSettingsEntity>, state: MainScreenState) {
         this.screenState = state
         val result = DiffUtil.calculateDiff(ItemDiffUtil(items, newData), false)
         this.items.clear()
@@ -50,7 +50,7 @@ class MainAdapter(private val items: ArrayList<GenericItem>, private val actionH
 }
 
 class MainAdapterViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-    fun bind(genericItem: GenericItem) {
+    fun bind(genericItem: GenericSettingsEntity) {
         view.taskItemBaseLayout.setBackgroundColor(getBackgroundMaterialColor(view.context))
         view.taskItemText.text = genericItem.text
     }

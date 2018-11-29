@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z003b2z.twodew.R.id.mainRecyclerView
+import com.example.z003b2z.twodew.android.extensions.setDuration
 import com.example.z003b2z.twodew.di.tasks.WhenItemProvider
 import com.example.z003b2z.twodew.main.adapter.MainAdapter
 import com.example.z003b2z.twodew.main.adapter.WhenDialogAdapter
@@ -56,7 +57,7 @@ class WhenDialog(context: Context, val listener: (GenericItem?) -> Unit) : Alert
     }
     view.whenDialogRecyclerView.adapter = adapter
 
-    val animator = LandingAnimator(OvershootInterpolator(1f))
+    val animator = LandingAnimator(OvershootInterpolator(1f)).setDuration()
     view.whenDialogRecyclerView.itemAnimator = animator
   }
 }

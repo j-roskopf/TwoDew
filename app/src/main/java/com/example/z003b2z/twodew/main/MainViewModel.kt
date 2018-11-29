@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.z003b2z.twodew.db.TaskDatabase
 import com.example.z003b2z.twodew.db.entity.Task
 import com.example.z003b2z.twodew.job.TaskReminderJob
-import com.example.z003b2z.twodew.redux.Action
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.experimental.GlobalScope
 import com.evernote.android.job.JobManager
 import kotlinx.coroutines.experimental.launch
 import com.evernote.android.job.util.support.PersistableBundleCompat
+import com.example.z003b2z.twodew.db.TaskRepository
+import com.example.z003b2z.twodew.db.entity.GenericSettingsEntity
 import com.example.z003b2z.twodew.main.adapter.BottomSheetAdapter
 import com.example.z003b2z.twodew.main.model.GenericItem
 import com.example.z003b2z.twodew.main.model.GenericReminderItem
@@ -20,7 +21,8 @@ import com.example.z003b2z.twodew.main.ui.MainBottomSheetFragment
 import com.example.z003b2z.twodew.time.PeriodParser
 import kotlinx.coroutines.experimental.Dispatchers
 
-class MainViewModel(val db: TaskDatabase, private val notificationManager: NotificationManager) : ViewModel() {
+//TODO JOE REFACTOR DB OUT OF HERE IN FAVOR OF REPO
+class MainViewModel(val db: TaskDatabase, private val notificationManager: NotificationManager, private val taskRepository: TaskRepository) : ViewModel() {
 
   var currentState: MainScreenState = MainScreenState.Who("")
     set(value) {
@@ -58,7 +60,7 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
     return currentState
   }
 
-  fun reduce(action: Action): MainScreenState {
+  fun reduce(action: MainAction): MainScreenState {
     val newState = when (action) {
       is MainAction.WhoClicked -> MainScreenState.What(action.text)
       is MainAction.WhatClicked -> MainScreenState.When(action.text)
@@ -108,10 +110,10 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
 
   fun snoozeItem(
     viewHolder: RecyclerView.ViewHolder,
-    adapter: BottomSheetAdapter,
+    fragment: MainBottomSheetFragment,
     selectedItem: GenericItem
   ) {
-    val currentTask = (adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task
+    val currentTask = (fragment.adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task
 
     GlobalScope.launch {
       //don't want to call .copy here on currentTask because we want a new ID
@@ -137,14 +139,10 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
       )
 
       GlobalScope.launch(Dispatchers.Main) {
-        updateBottomSheet(allData, adapter)
-        adapter.notifyItemChanged(viewHolder.adapterPosition)
+        fragment.adapter.notifyItemChanged(viewHolder.adapterPosition)
+        fragment.updateData(PeriodParser.sortDates(allData))
       }
     }
-  }
-
-  private fun updateBottomSheet(newData: ArrayList<Task>, adapter: BottomSheetAdapter) {
-    adapter.updateData(PeriodParser.sortDates(newData))
   }
 
   fun deleteItem(viewHolder: RecyclerView.ViewHolder, fragment: MainBottomSheetFragment) {
@@ -164,6 +162,7 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
       val allData = ArrayList(db.taskDao().selectAll())
 
       GlobalScope.launch(Dispatchers.Main) {
+        fragment.adapter.notifyItemChanged(viewHolder.adapterPosition)
         fragment.updateData(PeriodParser.sortDates(allData))
       }
     }
@@ -182,6 +181,18 @@ class MainViewModel(val db: TaskDatabase, private val notificationManager: Notif
 
   fun validTask(adapter: BottomSheetAdapter, viewHolder: RecyclerView.ViewHolder): Boolean{
     return !(adapter.items[viewHolder.adapterPosition] as GenericReminderItem.Body).task.`when`.equals("never", ignoreCase = true)
+  }
+
+  suspend fun provideListOfWhenItems(): List<GenericSettingsEntity> {
+      return taskRepository.selectAllWhen()
+  }
+
+  suspend fun provideListOfTaskItems(): List<GenericSettingsEntity> {
+    return taskRepository.selectAllWhat()
+  }
+
+  suspend fun provideListOfWhoItems(): List<GenericSettingsEntity> {
+    return taskRepository.selectAllWho()
   }
 
   companion object {

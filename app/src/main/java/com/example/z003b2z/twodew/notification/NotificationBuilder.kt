@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.app.NotificationChannel
 import android.os.Build
 
+const val CHANNEL_ID = "General"
+
 class NotificationBuilder {
 
   companion object {
@@ -21,19 +23,15 @@ class NotificationBuilder {
     const val CANCEL_ACTION = "notification_cancelled"
   }
 
-  fun build(context: Context, id: Int, text: String, notificationManager: NotificationManager): NotificationCompat.Builder {
+  fun build(context: Context, id: Int, text: String, notificationManager: NotificationManager, persistent: Boolean): NotificationCompat.Builder {
     val color = ContextCompat.getColor(context, R.color.colorPrimary)
 
-    val CHANNEL_ID = "my_channel_01"// The id of the channel.
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val notifyID = 1
       val name = "Reminders"
       val importance = NotificationManager.IMPORTANCE_HIGH
       val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
       notificationManager.createNotificationChannel(mChannel)
     }
-
 
     val builder = NotificationCompat.Builder(context, CHANNEL_ID)
       .setSmallIcon(R.drawable.notification_icon)
@@ -46,7 +44,7 @@ class NotificationBuilder {
     val resultIntent = Intent(context, MainActivity::class.java)
     resultIntent.putExtra(MainViewModel.INTENT_TEXT, text)
 
-    if (false) {
+    if (persistent) {
       //make persistent
       builder.setOngoing(true)
     }
