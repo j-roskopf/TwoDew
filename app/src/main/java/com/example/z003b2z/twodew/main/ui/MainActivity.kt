@@ -49,6 +49,9 @@ import com.example.z003b2z.twodew.android.extensions.setDuration
 class MainActivity : AppCompatActivity() {
   private lateinit var adapter: MainAdapter
 
+  @Volatile
+  private var savedInstanceStateCalled = false
+
   private val mainViewModel: MainViewModel by viewModel()
   private val notificationBuilder: NotificationBuilder by inject()
   private val revealAnimation: Reveal by inject()
@@ -205,6 +208,8 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun renderLoadingTasks() {
+    if(savedInstanceStateCalled) return
+
     if (mainViewModel.previousState == MainScreenState.Confirmation) {
       setStateVisibility(confirmation = View.VISIBLE)
     } else {
@@ -299,5 +304,15 @@ class MainActivity : AppCompatActivity() {
   override fun onDestroy() {
     super.onDestroy()
     compositeDisposable.dispose()
+  }
+
+  override fun onSaveInstanceState(outState: Bundle?) {
+    super.onSaveInstanceState(outState)
+    savedInstanceStateCalled = true
+  }
+
+  override fun onResume() {
+    super.onResume()
+    savedInstanceStateCalled = false
   }
 }

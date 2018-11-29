@@ -1,5 +1,6 @@
 package com.example.z003b2z.twodew.settings
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.view.View
@@ -27,7 +28,18 @@ class GenericSettingsItemAdapter(private val items: ArrayList<GenericSettingsEnt
   override fun onBindViewHolder(holder: GenericSettingsItemAdapterViewHolder, position: Int) {
     holder.bind(items[holder.adapterPosition])
     holder.itemView.setOnLongClickListener {
-      listener(items[holder.adapterPosition])
+      AlertDialog.Builder(holder.itemView.context)
+        .setTitle("Confirm")
+        .setMessage("Do you want to delete this item?")
+        .setPositiveButton("Okay") { _, _ ->
+          listener(items[holder.adapterPosition])
+        }
+        .setNegativeButton("Cancel") { d, _ ->
+          d.dismiss()
+        }
+        .setCancelable(false)
+        .create()
+        .show()
       true
     }
   }
