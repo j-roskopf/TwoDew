@@ -3,23 +3,23 @@ package com.example.z003b2z.twodew.main
 import android.app.NotificationManager
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
-import com.example.z003b2z.twodew.db.TaskDatabase
-import com.example.z003b2z.twodew.db.entity.Task
-import com.example.z003b2z.twodew.job.TaskReminderJob
-import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.experimental.GlobalScope
 import com.evernote.android.job.JobManager
-import kotlinx.coroutines.experimental.launch
 import com.evernote.android.job.util.support.PersistableBundleCompat
+import com.example.z003b2z.twodew.db.TaskDatabase
 import com.example.z003b2z.twodew.db.TaskRepository
 import com.example.z003b2z.twodew.db.entity.GenericSettingsEntity
+import com.example.z003b2z.twodew.db.entity.Task
+import com.example.z003b2z.twodew.job.TaskReminderJob
 import com.example.z003b2z.twodew.main.adapter.BottomSheetAdapter
 import com.example.z003b2z.twodew.main.model.GenericItem
 import com.example.z003b2z.twodew.main.model.GenericReminderItem
 import com.example.z003b2z.twodew.main.model.TaskItem
 import com.example.z003b2z.twodew.main.ui.MainBottomSheetFragment
 import com.example.z003b2z.twodew.time.PeriodParser
-import kotlinx.coroutines.experimental.Dispatchers
+import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 //TODO JOE REFACTOR DB OUT OF HERE IN FAVOR OF REPO
 class MainViewModel(val db: TaskDatabase, private val notificationManager: NotificationManager, private val taskRepository: TaskRepository) : ViewModel() {
