@@ -4,19 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z003b2z.twodew.R
 import com.example.z003b2z.twodew.db.TaskRepository
 import com.example.z003b2z.twodew.db.entity.GenericSettingsEntity
 import com.example.z003b2z.twodew.db.entity.Type
-import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
-import kotlinx.android.synthetic.main.activity_main.mainRecyclerView
-import kotlinx.android.synthetic.main.generic_settings_fragment.genericSettingRecyclerView
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.android.synthetic.main.generic_settings_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class GenericSettingsItemFragment : Fragment() {

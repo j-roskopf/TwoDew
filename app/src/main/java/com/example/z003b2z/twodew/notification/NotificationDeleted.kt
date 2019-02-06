@@ -1,11 +1,11 @@
 package com.example.z003b2z.twodew.notification
-import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import com.example.z003b2z.twodew.db.TaskDatabase
 import com.example.z003b2z.twodew.main.MainViewModel
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 

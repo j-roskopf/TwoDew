@@ -2,10 +2,10 @@ package com.example.z003b2z.twodew.settings
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -18,16 +18,11 @@ import com.example.z003b2z.twodew.db.TaskRepository
 import com.example.z003b2z.twodew.db.entity.GenericSettingsEntity
 import com.example.z003b2z.twodew.db.entity.Type
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_settings.settingsAppBar
-import kotlinx.android.synthetic.main.activity_settings.settingsFab
-import kotlinx.android.synthetic.main.activity_settings.settingsTabLayout
-import kotlinx.android.synthetic.main.activity_settings.settingsViewPager
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.android.synthetic.main.activity_settings.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import java.lang.RuntimeException
-import java.util.UUID
 
 const val ARG_DATA_CHANGED = "data_changed"
 
