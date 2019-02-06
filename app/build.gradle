@@ -62,7 +62,7 @@ dependencies {
 
   implementation 'com.jakewharton.timber:timber:4.7.1'
 
-  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2-eap13'
 
   implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
   implementation 'net.danlew:android.joda:2.10.0'

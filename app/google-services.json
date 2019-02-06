@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "653557068808",
+    "firebase_url": "https://twodew-59e4c.firebaseio.com",
+    "project_id": "twodew-59e4c",
+    "storage_bucket": "twodew-59e4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653557068808:android:6addc99dcafccde2",
+        "android_client_info": {
+          "package_name": "com.example.z003b2z.twodew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653557068808-kd87parpiht4rgddhsitke3euj6km7vp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.z003b2z.twodew",
+            "certificate_hash": "33ed51a52951693bd86cae5dd5f3deaa06f1a03d"
+          }
+        },
+        {
+          "client_id": "653557068808-agmgh43u4vh9v0qp4fifg670141d8to0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvhozlFcruECjK8Mwq3dwQye6IuPJD4gw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653557068808-agmgh43u4vh9v0qp4fifg670141d8to0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
